@@ -1,14 +1,20 @@
 package com.qbix.barest;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -23,18 +29,30 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+        fab.setOnClickListener(view -> {
+            Map<String, Object> update = new HashMap<>();
+            update.put("aaa", "dummy");
+            update.put("bbb", 123);
+
+            Log.d(TAG, "performTestAction: testWrite RQST");
+
+            FirebaseFirestore.getInstance().collection("test").document()
+                    .set(update).addOnCompleteListener(setTask -> {
+                // This completion listener does not fire and data is not written when
+                // In-App Messaging is included in build!
+                if (setTask.isSuccessful()) {
+                    Log.d(TAG, "testWrite: SUCCESS");
+                } else {
+                    FirebaseFirestoreException fse = (FirebaseFirestoreException) setTask.getException();
+                    Log.e(TAG, "testWrite FAILED", fse);
+                }
+            });
+            Log.d(TAG, "performTestAction: testWrite DONE");
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -61,10 +79,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         Log.d(TAG, "onStart: ");
-/*
-        String token = FirebaseInstanceId.getInstance().getToken();
-        Log.i(TAG, "onStart: token= " + token);
-*/
     }
 
     @Override
@@ -73,18 +87,4 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onStop: ");
 
     }
-
-/*
-    public static void logEvents(String event, String category, String action, Context context){
-        FirebaseAnalytics mFireBase = FirebaseAnalytics.getInstance(context);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("ga_category",category);
-        bundle.putString("ga_action", action);
-        bundle.putString("ga_label", "test_label");
-
-        mFireBase.logEvent("eventoga",bundle);
-
-    }
-*/
 }

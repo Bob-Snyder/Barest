@@ -34,20 +34,20 @@ public class MainActivity extends AppCompatActivity {
             update.put("aaa", "dummy");
             update.put("bbb", 123);
 
-            Log.d(TAG, "performTestAction: testWrite RQST");
+            Log.d(TAG, "testWrite RQST");
 
             FirebaseFirestore.getInstance().collection("test").document()
                     .set(update).addOnCompleteListener(setTask -> {
-                // This completion listener does not fire and data is not written when
-                // In-App Messaging is included in build!
+                // For API 19 device, this completion listener does not fire and
+                // data is not written when In-App Messaging is included in build.
                 if (setTask.isSuccessful()) {
-                    Log.d(TAG, "testWrite: SUCCESS");
+                    Log.d(TAG, "testWrite SUCCESS");
                 } else {
                     FirebaseFirestoreException fse = (FirebaseFirestoreException) setTask.getException();
                     Log.e(TAG, "testWrite FAILED", fse);
                 }
             });
-            Log.d(TAG, "performTestAction: testWrite DONE");
+            Log.d(TAG, "testWrite DONE");
         });
     }
 

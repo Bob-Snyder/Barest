@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:18.1.0'
 
     // !! Comment out the following line to restore correct Firestore operation !!
-    //implementation 'com.google.firebase:firebase-inappmessaging-display:17.1.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:17.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
